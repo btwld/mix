@@ -4,7 +4,7 @@
 
 - Start a style with widget modifiers using `BoxStyler.wrap(...)` or typed
   shorthand such as `BoxStyler style = .wrap(.opacity(0.5));`. Available on
-  generated Mix and chart stylers, and on `GridBoxStyler` (#1091).
+  generated Mix stylers and on `GridBoxStyler` (#1091).
 - `AnimationConfig.reversible(forward, reverse: exit)` lets a variant set its
   own exit timing, for example
   `.animate(.reversible(.easeIn(120.ms), reverse: .easeOut(240.ms)))`. Both
@@ -16,10 +16,11 @@
 
 ### Bug fixes
 
-- Delayed curve transitions hold the current rendered value during the delay.
+- Delayed curve transitions hold the current rendered value during the delay
+  (#1131, #1134).
 - Replacing a curve or spring driver mid-transition (for example switching from
   a curve to a spring config) now continues from the rendered value instead of
-  jumping to the previous target.
+  jumping to the previous target (#1131, #1134).
 - **Blur lifecycle:** preserve child state, focus, text editing, and active
   tickers when blur changes to or from zero. The `ImageFiltered` wrapper stays
   mounted with filtering disabled at zero sigma (#1121).
@@ -34,7 +35,7 @@
 ### Documentation
 
 - Document how `MixScope` propagates to overlays and routes, and how to create
-  custom Mix values and converters (#1120, #1123).
+  custom Mix values and converters (#1120, #1123, #1125).
 - Update documentation links to FlutterMix (#1127).
 
 ## 2.4.0

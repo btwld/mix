@@ -19,11 +19,11 @@ Or in `pubspec.yaml`:
 ```yaml
 dependencies:
   mix: ^2.5.0
-  mix_annotations: ^2.0.0
+  mix_annotations: ^2.2.0
 
 dev_dependencies:
   build_runner: ^2.4.0
-  mix_generator: ^2.0.0
+  mix_generator: ^2.3.0
 ```
 
 ## What It Generates
