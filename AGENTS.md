@@ -54,4 +54,5 @@ melos run fix             # Apply lint fixes and formatting
 
 Use Conventional Commits (`docs:`, `fix(mix):`, etc.) and descriptive
 `feat/`, `fix/`, `docs/`, `chore/`, `refactor/`, or `test/` branches.
+Follow [Releasing packages](RELEASING.md) when preparing a package release.
 Website documentation is maintained in [btwld/mix-docs](https://github.com/btwld/mix-docs).

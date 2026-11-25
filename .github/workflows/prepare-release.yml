@@ -1,0 +1,118 @@
+name: Prepare release
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_mix_packages:
+        type: boolean
+        description: Bump Mix core packages (mix, mix_lint, mix_annotations, mix_generator)
+        default: true
+      update_mix_winds:
+        type: boolean
+        description: Bump mix_winds
+        default: false
+      mix_version:
+        type: string
+        description: Override the version for Mix core packages
+        default: ""
+      mix_winds_version:
+        type: string
+        description: Override the version for mix_winds
+        default: ""
+
+jobs:
+  version:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install FVM
+      shell: bash
+      run: |
+        curl -fsSL https://fvm.app/install.sh | bash
+        fvm use mincompat --force
+        
+    - uses: kuhnroyal/flutter-fvm-config-action@v2
+      id: fvm-config-action
+
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+        channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+
+    - name: Flutter version
+      shell: bash
+      run: |
+        flutter --version
+        
+    - name: Setup Melos
+      run: |
+        dart pub global activate melos 6.3.3
+        melos bs
+
+    - name: Configure Git User
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+
+    - name: Bump package versions and open a release PR
+      shell: bash
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        UPDATE_MIX_PACKAGES: ${{ inputs.update_mix_packages }}
+        UPDATE_MIX_WINDS: ${{ inputs.update_mix_winds }}
+        MIX_VERSION: ${{ inputs.mix_version }}
+        MIX_WINDS_VERSION: ${{ inputs.mix_winds_version }}
+        LC_ALL: C.UTF-8
+      run: |
+        git checkout -b release/package-versions
+        git push --set-upstream origin release/package-versions
+
+        melos_args=()
+        if [[ "$UPDATE_MIX_PACKAGES" == false ]]; then
+          melos_args+=(--ignore=mix,mix_lint,mix_annotations,mix_generator)
+        fi
+        if [[ "$UPDATE_MIX_WINDS" == false ]]; then
+          melos_args+=(--ignore=mix_winds)
+        fi
+        if [[ -n "$MIX_VERSION" ]]; then
+          for package in mix mix_lint mix_annotations mix_generator; do
+            melos_args+=(-V "$package:$MIX_VERSION")
+          done
+        fi
+        if [[ -n "$MIX_WINDS_VERSION" ]]; then
+          melos_args+=(-V "mix_winds:$MIX_WINDS_VERSION")
+        fi
+
+        printf '' | melos version --yes --no-git-commit-version --no-git-tag-version "${melos_args[@]}"
+
+        drafts=$(dart --disable-dart-dev scripts/release.dart prepare-changelog --changed-since HEAD)
+        if [[ -z "$drafts" ]]; then
+          echo 'No package version bumps to release.'
+          exit 0
+        fi
+        heading='## Draft release notes'
+        fence='```'
+        while [[ "$drafts" == *"$fence"* ]]; do fence+='`'; done
+        printf '%s\n\n%smarkdown\n%s\n%s\n' "$heading" "$fence" "$drafts" "$fence" >> "$GITHUB_STEP_SUMMARY"
+
+        pr_body="$RUNNER_TEMP/version-pr.md"
+        prefix="$heading"$'\n\n'
+        if (( ${#prefix} + ${#drafts} + 1 > 60000 )); then
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          prefix+="Draft truncated. See the [workflow step summary]($run_url) for the full Markdown."$'\n\n'
+          drafts="${drafts:0:$((60000 - ${#prefix} - 1))}"
+        fi
+        printf '%s%s\n' "$prefix" "$drafts" > "$pr_body"
+
+        git add --update -- ':(glob)**/pubspec.yaml' ':(glob)**/CHANGELOG.md'
+        git commit -m 'chore: prepare package releases'
+        git push
+        gh pr create --title 'chore: prepare package releases' --body-file "$pr_body" --reviewer leoafarias

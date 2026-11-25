@@ -1,10 +1,10 @@
-# Publishing mix_markdown
+# First release of mix_markdown
 
-The first release, `0.1.0-beta.1`, must be published manually, as with
-[`mix_protocol`](publishing_mix_protocol.md). Pub.dev cannot configure
-automated publishing until the package exists.
+The first release, `0.1.0-beta.1`, requires manual publishing to pub.dev, as
+with [`mix_protocol`](publishing_mix_protocol.md). Automated publishing can
+only be configured once the package exists on pub.dev.
 
-1. Merge the PR. From a clean checkout of the merge commit, ensure
+1. Merge the release PR. From a clean checkout of the merge commit, ensure
    `packages/mix_markdown/pubspec_overrides.yaml` is absent so the package
    resolves hosted Mix dependencies.
 2. In `packages/mix_markdown`, run `fvm flutter pub get`, `fvm flutter test`,
@@ -14,6 +14,6 @@ automated publishing until the package exists.
    pub.dev Admin tab, enable GitHub Actions publishing for `btwld/mix` with tag
    pattern `mix_markdown-v{{version}}`.
 4. Create and push `mix_markdown-v0.1.0-beta.1` at the published commit for
-   traceability. `.github/workflows/publish.yml` skips this tag. For future
-   `mix_markdown-v<version>` tags, approve the `Production` deployment to let
-   `publish_mix_markdown` publish via OIDC.
+   traceability. `.github/workflows/publish.yml` skips this tag.
+
+For later versions, follow the [standard release process](../RELEASING.md).
